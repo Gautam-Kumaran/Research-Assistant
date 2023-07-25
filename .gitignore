@@ -1,0 +1,9 @@
+.env
+~$UG MARKS.xlsx
+main.py
+output_csv.csv
+test.py
+UG MARKS.csv
+UG MARKS.xlsx
+__pycache__/main.cpython-311.pyc
+__pycache__/app.cpython-311.pyc
