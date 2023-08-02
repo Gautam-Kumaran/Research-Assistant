@@ -17,6 +17,7 @@ import requests
 import json
 from langchain.schema import SystemMessage
 from fastapi import FastAPI
+from webhook import sendToTeams
 
 load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -133,6 +134,11 @@ tools = [
         description="useful for when you need to answer questions about current events, data. You should ask targeted questions"
     ),
     ScrapeWebsiteTool(),
+    Tool(
+        name="webhooks",
+        func = sendToTeams,
+        description="useful for when you need to send the output to a webhook"
+    )
 ]
 
 system_message = SystemMessage(
@@ -145,7 +151,8 @@ system_message = SystemMessage(
             3/ After scraping & search, you should think "is there any new things i should search & scraping based on the data I collected to increase research quality?" If answer is yes, continue; But don't do this more than 3 iteratins
             4/ You should not make things up, you should only write facts & data that you have gathered
             5/ In the final output, You should include all reference data & links to back up your research; You should include all reference data & links to back up your research
-            6/ In the final output, You should include all reference data & links to back up your research; You should include all reference data & links to back up your research"""
+            6/ In the final output, You should include all reference data & links to back up your research; You should include all reference data & links to back up your research
+            7/ summarize everything to under 2000 characters and send it to the webhooks tool """
 )
 
 agent_kwargs = {
@@ -166,8 +173,6 @@ agent = initialize_agent(
     memory=memory,
 )
 
-agent({"input": "what is threads"})
-
 
 # 4. Use streamlit to create a web app
 '''def main():
@@ -186,7 +191,7 @@ agent({"input": "what is threads"})
 if __name__ == '__main__':
      main()'''
 '''
-
+'''
 # 5. Set this as an API endpoint via FastAPI
 app = FastAPI()
 
@@ -200,4 +205,3 @@ def researchAgent(query: Query):
     content = agent({"input": query})
     actual_content = content['output']
     return actual_content
-'''
